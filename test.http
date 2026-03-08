@@ -1,0 +1,112 @@
+### ============================================================================
+### Archivo de Testing HTTP para el Proyecto
+### ============================================================================
+### 
+### ¿Qué es esto?
+### Este archivo permite PROBAR endpoints REST directamente desde VSCode
+### sin necesidad de Postman o Insomnia
+###
+### ¿Cómo funciona?
+### - Necesitas la extensión "REST Client" en VSCode
+###   https://marketplace.visualstudio.com/items?itemName=humao.rest-client
+### - Haz clic en "Send Request" encima de cada request
+### - La respuesta aparecerá en la pestaña "Response"
+###
+### Variables configurables
+### Cambia estos valores para tus pruebas
+@baseUrl = http://localhost:8080
+@contentType = application/json
+
+### Datos de ejemplo (CAMBIA ESTOS VALORES)
+@username1 = claudio
+@email1 = claudio@example.com
+
+@username2 = juan
+@email2 = juan@example.com
+
+@userId = 1
+@newUsername = claudio_updated
+@newEmail = claudio.nuevo@example.com
+
+### ============================================================================
+### 1. OBTENER TODOS LOS USUARIOS
+### ============================================================================
+
+GET {{baseUrl}}/api/v1/users
+
+
+### ============================================================================
+### 2. CREAR UN NUEVO USUARIO
+### ============================================================================
+### Modifica @username1 y @email1 arriba para cambiar los datos
+
+POST {{baseUrl}}/api/v1/users
+Content-Type: {{contentType}}
+
+{
+  "username": "{{username1}}",
+  "email": "{{email1}}"
+}
+
+
+### ============================================================================
+### 3. CREAR OTRO USUARIO
+### ============================================================================
+### Modifica @username2 y @email2 arriba para cambiar los datos
+
+POST {{baseUrl}}/api/v1/users
+Content-Type: {{contentType}}
+
+{
+  "username": "{{username2}}",
+  "email": "{{email2}}"
+}
+
+
+### ============================================================================
+### 4. OBTENER UN USUARIO POR ID
+### ============================================================================
+### Modifica @userId arriba (ej: 1, 2, 3...)
+
+GET {{baseUrl}}/api/v1/users/{{userId}}
+
+
+### ============================================================================
+### 5. ACTUALIZAR UN USUARIO
+### ============================================================================
+### Modifica @userId, @newUsername, @newEmail arriba para cambiar los datos
+
+PUT {{baseUrl}}/api/v1/users/{{userId}}
+Content-Type: {{contentType}}
+
+{
+  "username": "{{newUsername}}",
+  "email": "{{newEmail}}"
+}
+
+
+### ============================================================================
+### 6. ELIMINAR UN USUARIO
+### ============================================================================
+### Modifica @userId arriba (ej: 1, 2, 3...)
+
+DELETE {{baseUrl}}/api/v1/users/{{userId}}
+
+
+### ============================================================================
+### NOTAS PARA ESTUDIANTES
+### ============================================================================
+###
+### Métodos HTTP:
+### - GET: obtener datos (sin body)
+### - POST: crear datos (con body)
+### - PUT: actualizar datos completos (con body)
+### - DELETE: eliminar datos
+###
+### Status HTTP comunes:
+### - 200 OK: éxito
+### - 201 Created: recurso creado
+### - 400 Bad Request: datos inválidos
+### - 404 Not Found: no existe
+### - 500 Error: error del servidor
+
