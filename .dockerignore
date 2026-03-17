@@ -1,0 +1,61 @@
+# =============================================================================
+# .dockerignore — Primer Proyecto FS01
+# =============================================================================
+# Lista de archivos y directorios que Docker NO debe enviar al daemon al hacer
+# `docker build`. Cuanto menos se envíe, más rápido el build y menor el
+# "build context" (evita subir gigas de archivos innecesarios).
+# =============================================================================
+
+# ── Archivos de IDEs ────────────────────────────────────────────────────────
+.idea/
+.vscode/
+*.iml
+*.iws
+*.ipr
+.factorypath
+
+# ── Sistema operativo ────────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ── Gradle: caché y outputs locales ─────────────────────────────────────────
+# Estos se regeneran dentro del contenedor durante el build;
+# incluirlos solo ocuparía espacio en el contexto de Docker.
+.gradle/
+build/
+bin/
+out/
+
+# ── Base de datos SQLite local ───────────────────────────────────────────────
+# Cada contenedor tiene su propia BD en el volumen; la local no debe copiarse.
+*.db
+*.db-shm
+*.db-wal
+
+# ── Archivos de entorno y secretos ──────────────────────────────────────────
+# Nunca subir credenciales o configuraciones sensibles a la imagen
+.env
+.env.*
+*.env
+secrets/
+
+# ── Git ──────────────────────────────────────────────────────────────────────
+.git/
+.gitignore
+.gitattributes
+
+# ── Documentación y archivos de desarrollo ───────────────────────────────────
+# No son necesarios para ejecutar la aplicación
+*.md
+*.http
+SDKMAN_GUIDE.md
+README.md
+
+# ── Logs ────────────────────────────────────────────────────────────────────
+*.log
+logs/
+
+# ── Docker (evitar include recursivo) ────────────────────────────────────────
+# No tiene sentido incluir los propios archivos de Docker en el build context
+docker-compose.override.yml

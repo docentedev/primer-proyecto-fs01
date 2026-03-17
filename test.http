@@ -110,3 +110,15 @@ DELETE {{baseUrl}}/api/v1/users/{{userId}}
 ### - 404 Not Found: no existe
 ### - 500 Error: error del servidor
 
+
+GET {{baseUrl}}/api/v1/products
+
+# Save Product
+POST {{baseUrl}}/api/v1/products
+Content-Type: {{contentType}}
+
+{
+  "name": "Red Bull",
+  "description": "Te da alas!",
+  "price": 3000
+}

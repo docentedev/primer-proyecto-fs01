@@ -1,0 +1,66 @@
+# =============================================================================
+# docker-compose.yml — Primer Proyecto FS01
+# =============================================================================
+# Orquesta el contenedor de la API y gestiona volúmenes y red automáticamente.
+#
+# Comandos útiles:
+#   docker compose up --build      → construye la imagen y levanta el servicio
+#   docker compose up -d           → levanta en segundo plano (detached)
+#   docker compose down            → detiene y elimina los contenedores
+#   docker compose logs -f api     → muestra los logs en tiempo real
+#   docker compose down -v         → también elimina los volúmenes (⚠️ borra la BD)
+# =============================================================================
+
+services:
+
+  # ---------------------------------------------------------------------------
+  # Servicio principal: la API REST de Spring Boot
+  # ---------------------------------------------------------------------------
+  api:
+    # Construimos la imagen a partir del Dockerfile en este mismo directorio.
+    build:
+      context: .
+      dockerfile: Dockerfile
+
+    # Nombre explícito del contenedor (más fácil de identificar con `docker ps`)
+    container_name: primer-proyecto-api
+
+    # Mapeo de puertos: <puerto_host>:<puerto_contenedor>
+    # Accedemos desde el exterior por el puerto 3000,
+    # pero Spring Boot escucha internamente en el 8080.
+    ports:
+      - "3000:8080"
+
+    # Variables de entorno que sobreescriben las de application.properties.
+    # Aquí forzamos la URL de SQLite hacia el directorio con volumen persistente.
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:sqlite:/app/data/usuarios.db
+
+    # Montamos el volumen nombrado en el directorio donde la app guarda la BD.
+    # Así, los datos de SQLite sobreviven aunque el contenedor se elimine.
+    volumes:
+      - sqlite-data:/app/data
+
+    # Política de reinicio:
+    #   unless-stopped → se reinicia automáticamente si falla,
+    #                    pero NO al hacer `docker compose down` manualmente.
+    restart: unless-stopped
+
+    # Chequeo de salud: Docker verifica que la app responde correctamente.
+    # Útil para saber si el contenedor está realmente listo (no solo "corriendo").
+    healthcheck:
+      # Llama al endpoint raíz; ajusta la URL si tienes un /actuator/health
+      test: ["CMD-SHELL", "wget -qO- http://localhost:8080/ || exit 1"]
+      interval: 30s    # cada cuánto revisa
+      timeout: 10s     # tiempo máximo para que el endpoint responda
+      retries: 3       # intentos antes de marcar el contenedor como "unhealthy"
+      start_period: 60s  # tiempo de gracia al iniciar (Spring Boot puede tardar)
+
+# =============================================================================
+# Volúmenes nombrados
+# =============================================================================
+# Docker administra estos directorios automáticamente en el host.
+# Los datos persisten entre reinicios y recreaciones del contenedor.
+volumes:
+  sqlite-data:
+    name: primer-proyecto-sqlite
